@@ -1,4 +1,0 @@
-class clientController{
-
-    static Login
-}
