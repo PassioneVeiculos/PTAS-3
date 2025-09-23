@@ -1,4 +1,4 @@
-const router = require('./routes/clientRoutes')
+const router = require('./routes/clientRoutes.js')
 const express = require('express')
 const app = express()
 const PORT = 8001
