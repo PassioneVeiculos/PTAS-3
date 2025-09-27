@@ -11,3 +11,5 @@ app.use("/auth", router)
 app.listen(PORT, () => {
     console.log(`Servidor hospedado em: http://localhost:${PORT}`)
 })
+
+module.exports = app
