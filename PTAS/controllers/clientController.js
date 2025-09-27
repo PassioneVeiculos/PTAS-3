@@ -15,7 +15,7 @@ class clientController{
         })
         if(!usuario) {
             return res.json({
-                message: "Usuário não encontrado"
+                message: "Usuário não Encontrado!"
             })
         }
 
@@ -40,16 +40,17 @@ class clientController{
     }
 
     static async Cadastro(req, res) {
-        const {nome, email, senha} = req.body
+        const {nome, email, senha, tipo} = req.body
 
         const salt = bcryptjs.genSaltSync(8)
         const hashSenha = bcryptjs.hashSync(senha, salt)
 
-        const usuario = await clientController.usuario.create({
+        const usuario = await client.usuario.create({
             data: {
                 nome,
                 email,
                 senha: hashSenha,
+                tipo
             }
         })
         const response = {
