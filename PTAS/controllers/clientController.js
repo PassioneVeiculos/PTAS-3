@@ -59,6 +59,41 @@ class clientController{
         }
         res.status(418).send(response)
     }
+
+    static async Delete(req,res) {
+        const {email, senha} = req.body
+        const usuario = await client.usuario.findUnique({
+            where: {
+                email: email,
+            }
+        })
+
+        if(!usuario) {
+            return res.json({
+                message: "Usuário não Encontrado!"
+            })
+        }
+
+        const senhaCorreta = bcryptjs.compareSync(senha, usuario.senha)
+
+        if(!senhaCorreta) {
+            return res.status(401).json({
+                message: "Senha Incorreta!"
+            })
+        }
+
+        await client.usuario.delete({
+            where: {
+                email: email,
+            }
+        })
+
+        const response = {
+            message: "Usuário Deletado com Sucesso!",
+            erro: false,
+        }
+        res.status(418).send(response) 
+    }
 }
 
 module.exports = clientController
