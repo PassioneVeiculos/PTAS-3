@@ -7,7 +7,7 @@ const client = new PrismaClient();
 class clientController{
 
     static async Login(req, res) {
-        const {email, senha} = req.body
+        const {email, password} = req.body
         const usuario = await client.usuario.findUnique({
             where: {
                 email: email,
@@ -15,14 +15,16 @@ class clientController{
         })
         if(!usuario) {
             return res.json({
-                message: "Usuário não Encontrado!"
+                mensagem: "Usuário não Encontrado!",
+                erro: true,
             })
         }
 
-        const senhaCorreta = bcryptjs.compareSync(senha, usuario.senha)
+        const senhaCorreta = bcryptjs.compareSync(password, usuario.senha)
         if(!senhaCorreta) {
             return res.status(401).json({
-                message: "Senha Incorreta!"
+                mensagem: "Senha Incorreta!",
+                erro: true
             })
         }
 
@@ -32,7 +34,7 @@ class clientController{
                 expiresIn: '1h',
             })
         const response = {
-            message: "Logado com Sucesso!",
+            mensagem: "Logado com Sucesso!",
             erro: false,
             token: token
         }
@@ -40,22 +42,30 @@ class clientController{
     }
 
     static async Cadastro(req, res) {
-        const {nome, email, senha, tipo} = req.body
+        const {nome, email, password} = req.body
 
         const salt = bcryptjs.genSaltSync(8)
-        const hashSenha = bcryptjs.hashSync(senha, salt)
+        const hashSenha = bcryptjs.hashSync(password, salt)
 
         const usuario = await client.usuario.create({
             data: {
                 nome,
                 email,
                 senha: hashSenha,
-                tipo
+                tipo: "cliente"
             }
         })
+
+        const token = jwt.sign({ id: usuario.id },
+        process.env.SENHA_SERVIDOR,
+        {
+            expiresIn: '1h',
+        })
+
         const response = {
-            message: "Usuário Cadastrado com Sucesso!",
+            mensagem: "Usuário Cadastrado com Sucesso!",
             erro: false,
+            token: token,
         }
         res.status(418).send(response)
     }
