@@ -21,3 +21,9 @@ model usuario{
   senha String
   tipo String
 }
+
+model mesa{
+  id Int @id @default(autoincrement())
+  codigo String
+  n_lugares Int
+}
